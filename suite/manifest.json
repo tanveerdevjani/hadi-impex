@@ -1,0 +1,31 @@
+{
+  "name": "Hadi Impex Costing",
+  "short_name": "Hadi Costing",
+  "description": "Executive Import Costing Calculator & Multi-Currency Converter for Hadi Impex",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#1e293b",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo-transparent.png",
+      "sizes": "312x282",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

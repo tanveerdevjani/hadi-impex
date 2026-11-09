@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in — Hadi Impex</title>
+    <link rel="icon" href="/logo-transparent.png" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        background: #f8fafc;
+        color: #0f172a;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+      .brand {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 48px 56px;
+        background: linear-gradient(160deg, #0b2545 0%, #13315c 60%, #1d4ed8 140%);
+        color: #fff;
+      }
+      .logo {
+        align-self: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        border-radius: 14px;
+        padding: 8px 16px 8px 10px;
+        box-shadow: 0 8px 24px rgba(2, 6, 23, 0.25);
+      }
+      .logo img { display: block; height: 48px; width: auto; object-fit: contain; }
+      .logo b { display: block; color: #0b2545; font-size: 15px; letter-spacing: 0.04em; }
+      .logo span { display: block; color: #64748b; font-size: 11px; }
+      .brand h2 { margin: 0; font-size: 34px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; max-width: 420px; }
+      .brand p { margin: 14px 0 0; color: #cbd5e1; font-size: 15px; line-height: 1.6; max-width: 420px; }
+      .brand small { color: #94a3b8; font-size: 12px; }
+      .panel { display: grid; place-items: center; padding: 32px; }
+      form { width: min(380px, 100%); }
+      h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: -0.01em; }
+      .lead { margin: 0 0 28px; color: #64748b; font-size: 14px; }
+      label { display: block; margin-top: 16px; font-size: 13px; font-weight: 600; color: #334155; }
+      input {
+        width: 100%;
+        margin-top: 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 11px 12px;
+        font: inherit;
+        font-size: 14px;
+        color: #0f172a;
+        background: #fff;
+      }
+      input:focus { outline: 3px solid #dbeafe; border-color: #2563eb; }
+      button {
+        width: 100%;
+        margin-top: 24px;
+        border: 0;
+        border-radius: 10px;
+        padding: 12px;
+        background: #1d4ed8;
+        color: #fff;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover { background: #1e40af; }
+      button:disabled { opacity: 0.6; cursor: wait; }
+      .error {
+        margin-top: 14px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #be123c;
+        font-size: 13px;
+      }
+      .note { margin-top: 22px; color: #94a3b8; font-size: 12px; text-align: center; }
+      @media (max-width: 860px) {
+        body { display: block; }
+        .brand { flex-direction: row; align-items: center; padding: 16px 20px; }
+        .brand h2, .brand p, .brand small { display: none; }
+        .panel { min-height: calc(100vh - 80px); }
+        input { font-size: 16px; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="brand">
+      <div class="logo">
+        <img src="/logo-transparent.png" alt="" width="53" height="48" />
+        <div><b>HADI IMPEX</b><span>Business Suite</span></div>
+      </div>
+      <div>
+        <h2>Global trade, trusted solutions.</h2>
+        <p>Invoices, costing, quotations, purchases, payments, and container documents for the Hadi Impex team in one place.</p>
+      </div>
+      <small>Hadi Impex © 2026</small>
+    </section>
+    <main class="panel">
+      <form id="login">
+        <h1>Sign in</h1>
+        <p class="lead">Use the account your administrator created for you.</p>
+        <label>Username<input name="username" autocomplete="username" required autofocus /></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required /></label>
+        <button type="submit">Sign in</button>
+        <div class="error" id="error" hidden></div>
+        <p class="note">Forgot your password? Ask your administrator to reset it.</p>
+      </form>
+    </main>
+    <script>
+      const form = document.getElementById("login");
+      const error = document.getElementById("error");
+      const next = new URLSearchParams(location.search).get("next") || "/";
+      const destination = next.startsWith("/") && !next.startsWith("//") ? next : "/";
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.hidden = true;
+        const button = form.querySelector("button");
+        button.disabled = true;
+        button.textContent = "Signing in...";
+        try {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: form.username.value, password: form.password.value }),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.error || "Sign in failed.");
+          location.assign(destination);
+        } catch (err) {
+          error.textContent = err.message || "Sign in failed.";
+          error.hidden = false;
+          button.disabled = false;
+          button.textContent = "Sign in";
+        }
+      });
+    </script>
+  </body>
+</html>
